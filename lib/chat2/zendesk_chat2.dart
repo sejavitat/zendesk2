@@ -9,7 +9,7 @@ class Zendesk2Chat {
           print('zendesk2 [sendChatProvidersResult]: ${call.arguments}');
         try {
           final providerModel = ProviderModel.fromJson(call.arguments);
-          _providersStream?.sink.add(providerModel);
+          _providersStream?.sink?.add(providerModel);
         } catch (e) {
           print(e);
         }
@@ -21,7 +21,7 @@ class Zendesk2Chat {
   static const _channel = const MethodChannel('zendesk2');
 
   // ignore: close_sinks
-  StreamController<ProviderModel>? _providersStream;
+  StreamController<ProviderModel> _providersStream;
 
   bool _isLoggerEnabled = false;
 
@@ -30,7 +30,7 @@ class Zendesk2Chat {
   /// Stream is updated at Duration provided on ```startChatProviders```
   Stream<ProviderModel> get providersStream {
     _getChatProviders();
-    return _providersStream!.stream.asBroadcastStream();
+    return _providersStream.stream.asBroadcastStream();
   }
 
   /// Initialize the Zendesk SDK
@@ -186,8 +186,8 @@ class Zendesk2Chat {
   /// Close connection and release resources
   Future<void> dispose() async {
     try {
-      await _providersStream!.sink.close();
-      await _providersStream!.close();
+      await _providersStream.sink.close();
+      await _providersStream.close();
       _providersStream = null;
       final result = await _channel.invokeMethod('dispose');
       if (_isLoggerEnabled) {
@@ -234,8 +234,8 @@ class Zendesk2Chat {
   Future<void> startChatProviders({bool connect = true}) async {
     try {
       if (_providersStream != null) {
-        await _providersStream!.sink.close();
-        await _providersStream!.close();
+        await _providersStream.sink.close();
+        await _providersStream.close();
       }
       _providersStream = StreamController<ProviderModel>();
       final result = await _channel
@@ -327,7 +327,7 @@ class Zendesk2Chat {
     final value = await _channel.invokeMethod('getChatProviders');
     if (value != null) {
       final providerModel = ProviderModel.fromJson(value);
-      _providersStream!.add(providerModel);
+      _providersStream.add(providerModel);
     }
   }
 
@@ -384,7 +384,7 @@ class Zendesk2Chat {
   }
 
   /// Providers only - retrieve all compatible file extensions for Zendesk live chat
-  Future<List<String>?> getAttachmentExtensions() async {
+  Future<List<String>> getAttachmentExtensions() async {
     try {
       final value =
           await _channel.invokeMethod('compatibleAttachmentsExtensions');
